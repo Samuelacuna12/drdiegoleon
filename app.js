@@ -4,6 +4,7 @@ const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)]
 let language = 'en';
 const t = (en, es) => language === 'en' ? en : es;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+let motionPaused = false;
 const heroVideo = $('#heroVideo');
 const heroPause = $('#heroPause');
 let heroManuallyPaused = false;
@@ -43,7 +44,9 @@ function translatePage() {
   $('#imageDialog [data-close]').setAttribute('aria-label', t('Close image', 'Cerrar imagen'));
   $('#whatsappDialog [data-close]').setAttribute('aria-label', t('Close WhatsApp panel', 'Cerrar WhatsApp'));
   $('#expandCase').setAttribute('aria-label', t('Enlarge case image', 'Ampliar imagen del caso'));
+  $$('[data-case]').forEach(button => button.setAttribute('aria-label', t('View case ', 'Ver caso ') + String(Number(button.dataset.case) + 1).padStart(2, '0')));
   if ($('#bookingDialog').open) renderBooking();
+  document.dispatchEvent(new Event('languagechange'));
 }
 $('#language').addEventListener('click', () => { language = language === 'en' ? 'es' : 'en'; translatePage(); });
 function closeMobileMenu() { $('#mobileNav').hidden = true; $('#menuToggle').setAttribute('aria-expanded', 'false'); }
@@ -59,11 +62,11 @@ if (!reducedMotion.matches && 'IntersectionObserver' in window) {
   const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     if (entry.isIntersecting) { entry.target.classList.add('shown'); revealObserver.unobserve(entry.target); }
   }), { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-  $$('.reveal').forEach(el => revealObserver.observe(el));
+  $$('.reveal, .section-top').forEach(el => revealObserver.observe(el));
 }
 function updateHeroControl() { heroPause.textContent = heroVideo.paused ? '▶' : 'Ⅱ'; heroPause.setAttribute('aria-label', heroVideo.paused ? t('Play background video', 'Reproducir video de fondo') : t('Pause background video', 'Pausar video de fondo')); }
 function resumeHero() {
-  if (!reducedMotion.matches && !heroManuallyPaused && heroInView && !document.hidden && !document.querySelector('dialog[open]')) heroVideo.play().catch(updateHeroControl);
+  if (!reducedMotion.matches && !motionPaused && !heroManuallyPaused && heroInView && !document.hidden && !document.querySelector('dialog[open]')) heroVideo.play().catch(updateHeroControl);
 }
 heroVideo.addEventListener('play', updateHeroControl); heroVideo.addEventListener('pause', updateHeroControl);
 heroPause.addEventListener('click', () => { if (heroVideo.paused) { heroManuallyPaused = false; heroVideo.play().catch(updateHeroControl); } else { heroManuallyPaused = true; heroVideo.pause(); } });
@@ -89,9 +92,25 @@ $$('[data-video]').forEach(button => button.addEventListener('click', () => {
   $('#modalVideo').src = 'assets/' + video.file; $('#modalVideo').muted = false; openDialog(dialog); $('#modalVideo').play().catch(() => {});
 }));
 $$('[data-whatsapp]').forEach(button => button.addEventListener('click', () => openDialog($('#whatsappDialog'))));
-$$('[data-case]').forEach(button => button.addEventListener('click', () => {
-  currentCase = Number(button.dataset.case); $('#caseImage').src = cases[currentCase]; $('#caseNumber').textContent = '0' + (currentCase + 1);
+let caseRequest = 0;
+$$('[data-case]').forEach(button => button.addEventListener('click', async () => {
+  const nextCase = Number(button.dataset.case);
+  const request = ++caseRequest;
+  if (nextCase === currentCase) return;
+  const incoming = new Image(); incoming.src = cases[nextCase];
+  try { await incoming.decode(); } catch { return; }
+  if (request !== caseRequest) return;
+  const image = $('#caseImage');
+  const previous = image.cloneNode(); previous.removeAttribute('id'); previous.alt = ''; previous.setAttribute('aria-hidden', 'true'); previous.classList.add('case-previous');
+  $$('.case-previous').forEach(el => el.remove());
+  currentCase = nextCase; image.src = incoming.src; $('#caseNumber').textContent = '0' + (currentCase + 1);
   $$('[data-case]').forEach(tab => { tab.classList.toggle('active', tab === button); tab.setAttribute('aria-pressed', String(tab === button)); });
+  if (!reducedMotion.matches && !motionPaused) {
+    image.after(previous);
+    const exit = previous.animate([{ opacity: 1, transform: 'translateX(0)' }, { opacity: 0, transform: 'translateX(-7%)' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.15,1)' });
+    image.animate([{ clipPath: 'inset(0 0 0 100%)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 520, easing: 'cubic-bezier(.2,.7,.15,1)' });
+    exit.finished.then(() => previous.remove()).catch(() => previous.remove());
+  }
 }));
 $('#expandCase').addEventListener('click', () => { $('#expandedImage').src = cases[currentCase]; openDialog($('#imageDialog')); });
 // This prototype uses illustrative availability only. No data leaves the browser.

@@ -25,7 +25,9 @@ Visit `http://localhost:8765`.
 - Background video is muted, pausable, stops outside the viewport and respects reduced-motion preferences.
 - User-initiated videos open with native playback and volume controls.
 - Original before/after case gallery with an enlarged view.
-- Fully responsive layout, scroll reveals, hover states, accessible dialogs and keyboard navigation.
+- Fully responsive cinematic chapters: layered case gallery, sticky clinician portrait, stacked journey panels, staggered film cards and scroll-linked parallax.
+- Muted patient-video previews on desktop hover; original audio opens on click.
+- Global motion pause, reduced-motion preference support, accessible dialogs and keyboard navigation.
 - English by default, with Spanish translation.
 - Three-step sample appointment flow: modality, date/time and sample contact details.
 - Colombia timezone displayed explicitly; past dates and Sundays disabled; sample Saturday hours reduced.
@@ -42,6 +44,7 @@ WhatsApp, phone, email and map links point to public contact details from the or
 - `index.html`: semantic content and UI.
 - `style.css`: responsive styling, motion and reduced-motion fallback.
 - `app.js`: language switching, media, dialogs, gallery and sample appointment flow.
+- `experience.css` and `experience.js`: cinematic chapter layouts, scroll-linked motion, previews and motion controls.
 - `assets/`: original clinic videos and optimized clinic images.
 - `favicon.svg`: simple concept favicon.
 - `DESIGN.md`: design rationale, references and implementation decisions.

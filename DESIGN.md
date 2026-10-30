@@ -1,5 +1,20 @@
 # Design decisions
 
+## Version 2: motion beyond the hero
+
+Build target: retain the approved cinematic hero and black / midnight-blue / white identity; extend their scale, photographic emphasis and motion through the rest of the experience. Direct iteration requested by the owner, with stronger movement explicitly requested. Live Refero style queries returned NO_SUBSCRIPTION; use the already reviewed Musemind, Dovena and Dentiva Pinterest references plus the Refero motion and visual QA craft guides.
+
+| Decision | Source and role | Implementation |
+| --- | --- | --- |
+| Large asymmetric case composition | Musemind: oversized type and photographic hierarchy | Oversized heading, offset case stage and thumbnail navigation; clinical photographs stay uncropped |
+| Image-led clinician chapter | Dovena: human photography; existing approved hero | Large sticky portrait with a moving image crop, offset typography and treatment rows |
+| Layered international journey | User requests more movement; Refero motion: hierarchy and continuity | Three sticky chapter panels with real media, revealed in order by ordinary scrolling |
+| Patient film strip | Existing original film assets; user asks for more animation | Staggered portrait cards, scroll-linked movement, muted hover previews and click for audio |
+| Continuous section rhythm | User palette and Dentiva light/dark contrast | White case stage, midnight clinician, white journey, black cinema, white questions, navy booking |
+| Motion control | Refero motion guide: reduced motion and interruptibility | Global pause control, operating-system preference, transform-based scroll updates and no scroll hijack |
+
+Preserve real clinical media, bilingual content, native scrolling and the demonstration booking boundary. Reject decorative fake medical graphics, invented results, generic three-column text grids, autoplay audio, and motion that blocks reading. Tokens: existing ink/navy/white; pale blue only for supporting strokes and highlights; 2px CTA corners, 12–24px media corners, hairline borders and restrained layered shadows.
+
 ## Locked direction
 
 Cinematic, image-led dentistry. Black and midnight blue create the frame for the original clinic films; white sections provide contrast for case evaluation, questions and appointment selection. The visitor should immediately understand how to begin a conversation.
